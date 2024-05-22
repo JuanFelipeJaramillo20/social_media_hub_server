@@ -15,9 +15,7 @@ describe("User database operations", () => {
   let testUser: User;
 
   beforeEach(async () => {
-    await mongoose.connect(
-      "mongodb+srv://jjar:WJjPGi9q24oMBnT0@socialhubqacluster.imimtqm.mongodb.net/?retryWrites=true&w=majority&appName=SocialHubQACluster"
-    );
+    await mongoose.connect("");
     testUser = (await createUser({
       username: "testUser",
       email: "test@example.com",
