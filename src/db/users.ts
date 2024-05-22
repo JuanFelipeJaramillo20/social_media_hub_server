@@ -1,4 +1,16 @@
 import mongoose from "mongoose";
+export interface Authentication {
+  password: string;
+  salt: string;
+  sessionToken: string;
+}
+
+export interface User {
+  _id?: any;
+  username: string;
+  email: string;
+  authentication: Authentication;
+}
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
@@ -24,4 +36,4 @@ export const createUser = (values: Record<string, any>) =>
   new UserModel(values).save().then((user) => user.toObject());
 export const deleteUserById = (id: string) => UserModel.findByIdAndDelete(id);
 export const updateUserById = (id: string, values: Record<string, any>) =>
-  UserModel.findByIdAndUpdate(id, values);
+  UserModel.findByIdAndUpdate(id, values, { new: true });
