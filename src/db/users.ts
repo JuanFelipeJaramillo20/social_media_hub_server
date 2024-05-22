@@ -6,7 +6,7 @@ export interface Authentication {
 }
 
 export interface User {
-  _id?: any;
+  _id: mongoose.Types.ObjectId;
   username: string;
   email: string;
   authentication: Authentication;

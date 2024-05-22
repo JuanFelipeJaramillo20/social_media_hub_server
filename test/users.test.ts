@@ -28,7 +28,9 @@ describe("User database operations", () => {
   });
 
   afterEach(async () => {
-    await deleteUserById(testUser._id);
+    if (testUser._id) {
+      await deleteUserById(testUser._id?.toString());
+    }
     await mongoose.disconnect();
   });
 
@@ -59,10 +61,12 @@ describe("User database operations", () => {
   });
 
   test("getUserById should return a user with the given id", async () => {
-    const user = await getUserById(testUser._id);
-    expect(user).toBeTruthy();
-    if (user) {
-      expect(user._id.toString()).toBe(testUser._id.toString());
+    if (testUser._id) {
+      const user = await getUserById(testUser._id.toString());
+      expect(user).toBeTruthy();
+      if (user) {
+        expect(user._id.toString()).toBe(testUser._id.toString());
+      }
     }
   });
 
@@ -84,31 +88,35 @@ describe("User database operations", () => {
   });
 
   test("deleteUserById should delete the user with the given id", async () => {
-    const deletedUser = await deleteUserById(testUser._id);
-    expect(deletedUser).toBeTruthy();
-    if (deletedUser) {
-      expect(deletedUser._id.toString()).toBe(testUser._id.toString());
-    }
+    if (testUser._id) {
+      const deletedUser = await deleteUserById(testUser._id.toString());
+      expect(deletedUser).toBeTruthy();
+      if (deletedUser) {
+        expect(deletedUser._id.toString()).toBe(testUser._id.toString());
+      }
 
-    const user = await getUserById(testUser._id);
-    expect(user).toBeNull();
+      const user = await getUserById(testUser._id.toString());
+      expect(user).toBeNull();
+    }
   });
 
   test("updateUserById should update the user with the given id", async () => {
-    const updatedUser = await updateUserById(testUser._id, {
-      username: "updatedUser",
-    });
-    console.log("Updated user: " + updatedUser);
+    if (testUser._id) {
+      const updatedUser = await updateUserById(testUser._id.toString(), {
+        username: "updatedUser",
+      });
+      console.log("Updated user: " + updatedUser);
 
-    expect(updatedUser).toBeTruthy();
-    if (updatedUser) {
-      expect(updatedUser.username).toBe("updatedUser");
-    }
+      expect(updatedUser).toBeTruthy();
+      if (updatedUser) {
+        expect(updatedUser.username).toBe("updatedUser");
+      }
 
-    const user = await getUserById(testUser._id);
-    expect(user).toBeTruthy();
-    if (user) {
-      expect(user.username).toBe("updatedUser");
+      const user = await getUserById(testUser._id.toString());
+      expect(user).toBeTruthy();
+      if (user) {
+        expect(user.username).toBe("updatedUser");
+      }
     }
   });
 });
