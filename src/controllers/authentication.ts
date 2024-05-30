@@ -1,6 +1,11 @@
 import express from "express";
-import { createUser, getUserByEmail } from "../db/users";
+import {
+  createUser,
+  getUserByEmailWithCredentials,
+  getUserByEmail,
+} from "../db/users";
 import { authentication, random } from "../helpers";
+import { logger } from "../helpers/logger";
 
 export const login = async (req: express.Request, res: express.Response) => {
   try {
@@ -9,9 +14,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       return res.sendStatus(400);
     }
 
-    const user = await getUserByEmail(email).select(
-      "+authentication.salt +authentication.password"
-    );
+    const user = await getUserByEmailWithCredentials(email);
 
     if (!user) {
       return res.sendStatus(400);
@@ -37,8 +40,14 @@ export const login = async (req: express.Request, res: express.Response) => {
       path: "/",
     });
 
+    logger.info("User logged in successfully", {
+      email: user.email,
+      id: user.id,
+    });
+
     return res.status(200).json(user);
   } catch (error) {
+    logger.error("Error logging in user", { email: req.body.email });
     console.log(error);
     return res.sendStatus(400);
   }
@@ -68,8 +77,11 @@ export const register = async (req: express.Request, res: express.Response) => {
       },
     });
 
+    logger.info("User created", { user: user });
+
     return res.status(201).json(user);
   } catch (error) {
+    logger.error("Error creating user", { email: req.body.email });
     console.log(error);
     return res.sendStatus(400);
   }

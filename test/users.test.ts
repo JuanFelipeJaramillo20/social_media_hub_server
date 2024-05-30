@@ -15,7 +15,9 @@ describe("User database operations", () => {
   let testUser: User;
 
   beforeEach(async () => {
-    await mongoose.connect("");
+    await mongoose.connect(
+      "mongodb+srv://jjar:KfJazTGSPFuC0KHG@socialhubqacluster.imimtqm.mongodb.net/?retryWrites=true&w=majority&appName=SocialHubQACluster"
+    );
     testUser = (await createUser({
       username: "testUser",
       email: "test@example.com",
@@ -41,9 +43,7 @@ describe("User database operations", () => {
   });
 
   test("getUserBySessionToken should return a user with the given session token", async () => {
-    const user = await getUserBySessionToken("testSessionToken").select(
-      "+authentication.sessionToken"
-    );
+    const user = await getUserBySessionToken("testSessionToken");
     console.log("USER FOUND: " + user);
 
     expect(user).toBeTruthy();
